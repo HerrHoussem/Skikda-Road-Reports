@@ -19,7 +19,7 @@
     <!-- Header -->
     <header class="site-header">
         <div class="container header-content">
-            <a href="#" class="logo" aria-label="بلاغات الطريق - سكيكدة">
+            <a href="#home" class="logo" aria-label="بلاغات الطريق - سكيكدة">
                 <span class="logo-icon">🚦</span>
                 <span>بلاغات الطريق - سكيكدة</span>
             </a>
@@ -36,11 +36,11 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
     <main>
+        <!-- Hero Section -->
         <section id="home" class="hero">
-            <div class="container hero-grid">
-                <div class="hero-text">
+            <div class="hero-overlay">
+                <div class="container hero-content">
                     <span class="badge">منصة مواطنة رقمية</span>
                     <h1>ساهم في تحسين الطرقات والخدمات العمومية في ولاية سكيكدة</h1>
                     <p>
@@ -52,18 +52,47 @@
                         <a href="#how-it-works" class="btn secondary-btn">كيف تعمل المنصة؟</a>
                     </div>
 
-                    <div class="trust-row">
-                        <div><strong>سريع</strong><span>نموذج بسيط</span></div>
-                        <div><strong>منظم</strong><span>تصنيف البلاغات</span></div>
-                        <div><strong>شفاف</strong><span>تتبع الحالة</span></div>
+                    <div class="trust-row" aria-label="مميزات المنصة">
+                        <div class="trust-card">
+                            <strong>سريع</strong>
+                            <span>نموذج بسيط</span>
+                        </div>
+                        <div class="trust-card">
+                            <strong>منظم</strong>
+                            <span>تصنيف البلاغات</span>
+                        </div>
+                        <div class="trust-card">
+                            <strong>شفاف</strong>
+                            <span>تتبع الحالة</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Report Form -->
+        <section id="report" class="report-section section-padding">
+            <div class="container report-grid">
+                <div class="report-info">
+                    <span class="section-label">إرسال بلاغ</span>
+                    <h2>سجّل المشكلة التي لاحظتها</h2>
+                    <p>
+                        هذه نسخة أولية للواجهة. يمكن لاحقًا ربط النموذج بقاعدة بيانات مثل Firebase وإضافة رفع الصور وتحديد الموقع الجغرافي.
+                    </p>
+
+                    <div class="info-list">
+                        <div>✅ تصنيف البلاغ حسب النوع</div>
+                        <div>✅ تحديد البلدية أو المنطقة</div>
+                        <div>✅ وصف واضح للمشكلة</div>
+                        <div>✅ جاهز للتطوير وربط قاعدة بيانات</div>
                     </div>
                 </div>
 
-                <div class="hero-card" id="report">
-                    <h2>إرسال بلاغ</h2>
+                <div class="report-card">
+                    <h2>نموذج البلاغ</h2>
                     <p>املأ المعلومات الأساسية وسيتم تسجيل البلاغ في النسخة التجريبية.</p>
 
-                    <form class="report-form">
+                    <form class="report-form" onsubmit="handleReportSubmit(event)">
                         <label for="type">نوع المشكلة</label>
                         <select id="type" name="type" required>
                             <option value="">اختر نوع البلاغ</option>
@@ -99,7 +128,7 @@
                     <article class="service-card">
                         <div class="card-icon">🕳️</div>
                         <h3>الحفر والتشققات</h3>
-                        <p>الإبلاغ عن الحفر أو الطرق المتضررة التي قد تسبب خطراً على المواطنين والمركبات.</p>
+                        <p>الإبلاغ عن الحفر أو الطرق المتضررة التي قد تسبب خطرًا على المواطنين والمركبات.</p>
                     </article>
 
                     <article class="service-card">
@@ -111,7 +140,7 @@
                     <article class="service-card">
                         <div class="card-icon">💡</div>
                         <h3>الإنارة العمومية</h3>
-                        <p>التبليغ عن المصابيح أو الأعمدة المعطلة للمساعدة في تحسين السلامة ليلاً.</p>
+                        <p>التبليغ عن المصابيح أو الأعمدة المعطلة للمساعدة في تحسين السلامة ليلًا.</p>
                     </article>
                 </div>
             </div>
@@ -189,5 +218,12 @@
         </div>
     </footer>
 
+    <script>
+        function handleReportSubmit(event) {
+            event.preventDefault();
+            alert('تم تسجيل البلاغ بنجاح في النسخة التجريبية');
+            event.target.reset();
+        }
+    </script>
 </body>
 </html>
