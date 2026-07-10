@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="منصة رقمية للإبلاغ عن الحفر، تسربات المياه، وأعطال الإنارة العمومية في ولاية سكيكدة." />
+    <title>بلاغات الطريق - سكيكدة</title>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container header-content">
+            <a href="#" class="logo" aria-label="بلاغات الطريق - سكيكدة">
+                <span class="logo-icon">🚦</span>
+                <span>بلاغات الطريق - سكيكدة</span>
+            </a>
+
+            <nav class="navbar" aria-label="القائمة الرئيسية">
+                <a href="#home">الرئيسية</a>
+                <a href="#services">أنواع البلاغات</a>
+                <a href="#stats">الإحصائيات</a>
+                <a href="#how-it-works">طريقة العمل</a>
+                <a href="#contact">تواصل</a>
+            </nav>
+
+            <a href="#report" class="header-btn">إرسال بلاغ</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <main>
+        <section id="home" class="hero">
+            <div class="container hero-grid">
+                <div class="hero-text">
+                    <span class="badge">منصة مواطنة رقمية</span>
+                    <h1>ساهم في تحسين الطرقات والخدمات العمومية في ولاية سكيكدة</h1>
+                    <p>
+                        منصة سهلة وسريعة للإبلاغ عن الحفر، تسربات المياه، وأعطال الإنارة العمومية مع إمكانية تتبع حالة البلاغ.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a href="#report" class="btn primary-btn">إرسال بلاغ جديد</a>
+                        <a href="#how-it-works" class="btn secondary-btn">كيف تعمل المنصة؟</a>
+                    </div>
+
+                    <div class="trust-row">
+                        <div><strong>سريع</strong><span>نموذج بسيط</span></div>
+                        <div><strong>منظم</strong><span>تصنيف البلاغات</span></div>
+                        <div><strong>شفاف</strong><span>تتبع الحالة</span></div>
+                    </div>
+                </div>
+
+                <div class="hero-card" id="report">
+                    <h2>إرسال بلاغ</h2>
+                    <p>املأ المعلومات الأساسية وسيتم تسجيل البلاغ في النسخة التجريبية.</p>
+
+                    <form class="report-form">
+                        <label for="type">نوع المشكلة</label>
+                        <select id="type" name="type" required>
+                            <option value="">اختر نوع البلاغ</option>
+                            <option>حفرة في الطريق</option>
+                            <option>تسرب مياه</option>
+                            <option>إنارة عمومية معطلة</option>
+                            <option>انسداد مجرى</option>
+                            <option>مشكلة أخرى</option>
+                        </select>
+
+                        <label for="location">المنطقة / البلدية</label>
+                        <input id="location" name="location" type="text" placeholder="مثال: سكيكدة، عزابة، الحروش..." required />
+
+                        <label for="description">وصف المشكلة</label>
+                        <textarea id="description" name="description" rows="4" placeholder="اكتب وصفًا مختصرًا للمشكلة..." required></textarea>
+
+                        <button type="submit" class="submit-btn">تسجيل البلاغ</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services -->
+        <section id="services" class="services section-padding">
+            <div class="container">
+                <div class="section-title">
+                    <span>الخدمات</span>
+                    <h2>أنواع البلاغات المدعومة</h2>
+                    <p>واجهة مصممة لتسهيل جمع البلاغات وتنظيمها حسب نوع المشكلة والأولوية.</p>
+                </div>
+
+                <div class="cards-grid">
+                    <article class="service-card">
+                        <div class="card-icon">🕳️</div>
+                        <h3>الحفر والتشققات</h3>
+                        <p>الإبلاغ عن الحفر أو الطرق المتضررة التي قد تسبب خطراً على المواطنين والمركبات.</p>
+                    </article>
+
+                    <article class="service-card">
+                        <div class="card-icon">💧</div>
+                        <h3>تسربات المياه</h3>
+                        <p>تحديد أماكن التسربات لتقليل الهدر وتحسين سرعة التدخل.</p>
+                    </article>
+
+                    <article class="service-card">
+                        <div class="card-icon">💡</div>
+                        <h3>الإنارة العمومية</h3>
+                        <p>التبليغ عن المصابيح أو الأعمدة المعطلة للمساعدة في تحسين السلامة ليلاً.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats -->
+        <section id="stats" class="stats-section">
+            <div class="container stats-grid">
+                <div class="stat-box">
+                    <strong>125</strong>
+                    <span>بلاغ مسجل</span>
+                </div>
+                <div class="stat-box">
+                    <strong>89</strong>
+                    <span>بلاغ تمت معالجته</span>
+                </div>
+                <div class="stat-box">
+                    <strong>36</strong>
+                    <span>بلاغ قيد المتابعة</span>
+                </div>
+                <div class="stat-box">
+                    <strong>24/7</strong>
+                    <span>إمكانية الإرسال</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section id="how-it-works" class="how section-padding">
+            <div class="container">
+                <div class="section-title">
+                    <span>طريقة العمل</span>
+                    <h2>ثلاث خطوات بسيطة</h2>
+                </div>
+
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <span class="step-number">01</span>
+                        <h3>اختيار نوع البلاغ</h3>
+                        <p>اختر المشكلة: حفرة، تسرب مياه، إنارة معطلة أو مشكلة أخرى.</p>
+                    </div>
+
+                    <div class="step-card">
+                        <span class="step-number">02</span>
+                        <h3>إضافة التفاصيل</h3>
+                        <p>أضف البلدية والوصف حتى يكون البلاغ واضحًا وسهل المتابعة.</p>
+                    </div>
+
+                    <div class="step-card">
+                        <span class="step-number">03</span>
+                        <h3>تتبع الحالة</h3>
+                        <p>لاحقًا يمكن إضافة رقم تتبع ولوحة تحكم للإدارة.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="cta-section">
+            <div class="container cta-box">
+                <div>
+                    <h2>هل لاحظت مشكلة في الطريق؟</h2>
+                    <p>ساهم الآن في جعل ولاية سكيكدة أكثر أمانًا وتنظيمًا.</p>
+                </div>
+                <a href="#report" class="btn primary-btn">إرسال بلاغ الآن</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="container footer-content">
+            <p>© 2026 منصة بلاغات الطريق - سكيكدة. جميع الحقوق محفوظة.</p>
+            <p>نسخة أولية للعرض والتطوير.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
