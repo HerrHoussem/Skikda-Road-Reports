@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="منصة رقمية للإبلاغ عن الحفر، تسربات المياه، وأعطال الإنارة العمومية في ولاية سكيكدة." />
+    <title>بلاغات الطريق - سكيكدة</title>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container header-content">
+            <a href="#home" class="logo" aria-label="بلاغات الطريق - سكيكدة">
+                <span class="logo-icon">🚦</span>
+                <span>بلاغات الطريق - سكيكدة</span>
+            </a>
+
+            <nav class="navbar" aria-label="القائمة الرئيسية">
+                <a href="#home">الرئيسية</a>
+                <a href="#services">أنواع البلاغات</a>
+                <a href="#stats">الإحصائيات</a>
+                <a href="#latest-reports">آخر البلاغات</a>
+                <a href="#how-it-works">طريقة العمل</a>
+                <a href="#contact">تواصل</a>
+            </nav>
+
+            <a href="#report" class="header-btn">إرسال بلاغ</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="hero-overlay">
+                <div class="container hero-content">
+                    <span class="badge">منصة مواطنة رقمية</span>
+                    <h1>ساهم في تحسين الطرقات والخدمات العمومية في ولاية سكيكدة</h1>
+                    <p>
+                        منصة سهلة وسريعة للإبلاغ عن الحفر، تسربات المياه، وأعطال الإنارة العمومية مع تخزين البلاغات مباشرة في قاعدة بيانات PostgreSQL عبر Supabase.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a href="#report" class="btn primary-btn">إرسال بلاغ جديد</a>
+                        <a href="#latest-reports" class="btn secondary-btn">عرض آخر البلاغات</a>
+                    </div>
+
+                    <div class="trust-row" aria-label="مميزات المنصة">
+                        <div class="trust-card">
+                            <strong>سريع</strong>
+                            <span>نموذج بسيط</span>
+                        </div>
+                        <div class="trust-card">
+                            <strong>منظم</strong>
+                            <span>تصنيف البلاغات</span>
+                        </div>
+                        <div class="trust-card">
+                            <strong>متصل</strong>
+                            <span>قاعدة بيانات حقيقية</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Report Form -->
+        <section id="report" class="report-section section-padding">
+            <div class="container report-grid">
+                <div class="report-info">
+                    <span class="section-label">إرسال بلاغ</span>
+                    <h2>سجّل المشكلة التي لاحظتها</h2>
+                    <p>
+                        عند الضغط على زر تسجيل البلاغ سيتم حفظ المعلومات مباشرة في جدول <strong>reports</strong> داخل Supabase PostgreSQL.
+                    </p>
+
+                    <div class="info-list">
+                        <div>✅ تخزين البلاغ في PostgreSQL</div>
+                        <div>✅ إنشاء رقم تتبع تلقائي</div>
+                        <div>✅ عرض آخر البلاغات من قاعدة البيانات</div>
+                        <div>✅ جاهز للنشر على GitHub Pages</div>
+                    </div>
+                </div>
+
+                <div class="report-card">
+                    <h2>نموذج البلاغ</h2>
+                    <p>املأ المعلومات الأساسية وسيتم حفظ البلاغ في قاعدة البيانات.</p>
+
+                    <form class="report-form" id="reportForm">
+                        <label for="type">نوع المشكلة</label>
+                        <select id="type" name="type" required>
+                            <option value="">اختر نوع البلاغ</option>
+                            <option value="حفرة في الطريق">حفرة في الطريق</option>
+                            <option value="تسرب مياه">تسرب مياه</option>
+                            <option value="إنارة عمومية معطلة">إنارة عمومية معطلة</option>
+                            <option value="انسداد مجرى">انسداد مجرى</option>
+                            <option value="مشكلة أخرى">مشكلة أخرى</option>
+                        </select>
+
+                        <label for="location">المنطقة / البلدية</label>
+                        <input id="location" name="location" type="text" placeholder="مثال: سكيكدة، عزابة، الحروش..." required />
+
+                        <label for="description">وصف المشكلة</label>
+                        <textarea id="description" name="description" rows="4" placeholder="اكتب وصفًا مختصرًا للمشكلة..." required></textarea>
+
+                        <button type="submit" class="submit-btn" id="submitBtn">تسجيل البلاغ</button>
+                        <p id="formMessage" class="form-message"></p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services -->
+        <section id="services" class="services section-padding">
+            <div class="container">
+                <div class="section-title">
+                    <span>الخدمات</span>
+                    <h2>أنواع البلاغات المدعومة</h2>
+                    <p>واجهة مصممة لتسهيل جمع البلاغات وتنظيمها حسب نوع المشكلة والأولوية.</p>
+                </div>
+
+                <div class="cards-grid">
+                    <article class="service-card">
+                        <div class="card-icon">🕳️</div>
+                        <h3>الحفر والتشققات</h3>
+                        <p>الإبلاغ عن الحفر أو الطرق المتضررة التي قد تسبب خطرًا على المواطنين والمركبات.</p>
+                    </article>
+
+                    <article class="service-card">
+                        <div class="card-icon">💧</div>
+                        <h3>تسربات المياه</h3>
+                        <p>تحديد أماكن التسربات لتقليل الهدر وتحسين سرعة التدخل.</p>
+                    </article>
+
+                    <article class="service-card">
+                        <div class="card-icon">💡</div>
+                        <h3>الإنارة العمومية</h3>
+                        <p>التبليغ عن المصابيح أو الأعمدة المعطلة للمساعدة في تحسين السلامة ليلًا.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats -->
+        <section id="stats" class="stats-section">
+            <div class="container stats-grid">
+                <div class="stat-box">
+                    <strong id="totalReports">0</strong>
+                    <span>بلاغ مسجل</span>
+                </div>
+                <div class="stat-box">
+                    <strong id="newReports">0</strong>
+                    <span>بلاغ جديد</span>
+                </div>
+                <div class="stat-box">
+                    <strong id="resolvedReports">0</strong>
+                    <span>بلاغ تمت معالجته</span>
+                </div>
+                <div class="stat-box">
+                    <strong>24/7</strong>
+                    <span>إمكانية الإرسال</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Latest Reports -->
+        <section id="latest-reports" class="latest-section section-padding">
+            <div class="container">
+                <div class="section-title">
+                    <span>قاعدة البيانات</span>
+                    <h2>آخر البلاغات المسجلة</h2>
+                    <p>يتم قراءة هذه البيانات مباشرة من جدول reports في Supabase.</p>
+                </div>
+
+                <div class="reports-table-wrapper">
+                    <table class="reports-table">
+                        <thead>
+                            <tr>
+                                <th>رقم التتبع</th>
+                                <th>نوع المشكلة</th>
+                                <th>المنطقة</th>
+                                <th>الحالة</th>
+                                <th>التاريخ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportsTableBody">
+                            <tr>
+                                <td colspan="5">جاري تحميل البلاغات...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section id="how-it-works" class="how section-padding">
+            <div class="container">
+                <div class="section-title">
+                    <span>طريقة العمل</span>
+                    <h2>ثلاث خطوات بسيطة</h2>
+                </div>
+
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <span class="step-number">01</span>
+                        <h3>اختيار نوع البلاغ</h3>
+                        <p>اختر المشكلة: حفرة، تسرب مياه، إنارة معطلة أو مشكلة أخرى.</p>
+                    </div>
+
+                    <div class="step-card">
+                        <span class="step-number">02</span>
+                        <h3>إضافة التفاصيل</h3>
+                        <p>أضف البلدية والوصف حتى يكون البلاغ واضحًا وسهل المتابعة.</p>
+                    </div>
+
+                    <div class="step-card">
+                        <span class="step-number">03</span>
+                        <h3>الحفظ والتتبع</h3>
+                        <p>يُحفظ البلاغ في قاعدة البيانات مع رقم تتبع خاص.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="cta-section">
+            <div class="container cta-box">
+                <div>
+                    <h2>هل لاحظت مشكلة في الطريق؟</h2>
+                    <p>ساهم الآن في جعل ولاية سكيكدة أكثر أمانًا وتنظيمًا.</p>
+                </div>
+                <a href="#report" class="btn primary-btn">إرسال بلاغ الآن</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="container footer-content">
+            <p>© 2026 منصة بلاغات الطريق - سكيكدة. جميع الحقوق محفوظة.</p>
+            <p>متصل بقاعدة بيانات Supabase PostgreSQL.</p>
+        </div>
+    </footer>
+
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://xhgjmqyjbtnbdxvronhs.supabase.co';
+        const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_QBNv1eSIBsuzfu5j_eaRVA_UC3vF6KH';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+        const reportForm = document.getElementById('reportForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const formMessage = document.getElementById('formMessage');
+        const reportsTableBody = document.getElementById('reportsTableBody');
+
+        function generateReportId() {
+            const randomPart = Math.floor(100000 + Math.random() * 900000);
+            return `SKK-${randomPart}`;
+        }
+
+        function formatDate(value) {
+            if (!value) return '-';
+            return new Date(value).toLocaleString('ar-DZ', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function showMessage(message, type) {
+            formMessage.textContent = message;
+            formMessage.className = `form-message ${type}`;
+        }
+
+        async function handleReportSubmit(event) {
+            event.preventDefault();
+
+            const issueType = document.getElementById('type').value.trim();
+            const location = document.getElementById('location').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const trackingId = generateReportId();
+
+            if (!issueType || !location || !description) {
+                showMessage('يرجى ملء جميع الحقول المطلوبة.', 'error');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'جاري التسجيل...';
+            showMessage('', '');
+
+            const { error } = await supabaseClient
+                .from('reports')
+                .insert({
+                    report_id: trackingId,
+                    issue_type: issueType,
+                    location: location,
+                    description: description,
+                    status: 'new'
+                });
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'تسجيل البلاغ';
+
+            if (error) {
+                console.error('Supabase insert error:', error);
+                showMessage('حدث خطأ أثناء إرسال البلاغ. تأكد من RLS policies واسم الأعمدة في Supabase.', 'error');
+                return;
+            }
+
+            showMessage(`تم تسجيل البلاغ بنجاح. رقم التتبع: ${trackingId}`, 'success');
+            reportForm.reset();
+            loadReports();
+        }
+
+        async function loadReports() {
+            const { data, error } = await supabaseClient
+                .from('reports')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(8);
+
+            if (error) {
+                console.error('Supabase select error:', error);
+                reportsTableBody.innerHTML = '<tr><td colspan="5">تعذر تحميل البلاغات. تأكد من سياسة SELECT في Supabase.</td></tr>';
+                return;
+            }
+
+            const reports = data || [];
+            updateStats(reports);
+
+            if (reports.length === 0) {
+                reportsTableBody.innerHTML = '<tr><td colspan="5">لا توجد بلاغات حتى الآن.</td></tr>';
+                return;
+            }
+
+            reportsTableBody.innerHTML = reports.map(report => `
+                <tr>
+                    <td>${report.report_id || '-'}</td>
+                    <td>${report.issue_type || '-'}</td>
+                    <td>${report.location || '-'}</td>
+                    <td><span class="status-pill">${report.status || 'new'}</span></td>
+                    <td>${formatDate(report.created_at)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateStats(reports) {
+            const total = reports.length;
+            const newCount = reports.filter(r => (r.status || '').toLowerCase() === 'new' || r.status === 'جديد').length;
+            const resolvedCount = reports.filter(r => ['resolved', 'تم الحل', 'done'].includes((r.status || '').toLowerCase())).length;
+
+            document.getElementById('totalReports').textContent = total;
+            document.getElementById('newReports').textContent = newCount;
+            document.getElementById('resolvedReports').textContent = resolvedCount;
+        }
+
+        reportForm.addEventListener('submit', handleReportSubmit);
+        loadReports();
+    </script>
+</body>
+</html>
