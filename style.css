@@ -1,15 +1,13 @@
 /* =========================================================
    بلاغات الطريق - سكيكدة
-   Design language pulled directly from the hero photo:
-   the teal facade-lighting on the mosque, and the warm
-   amber trail of streetlights/headlights along the coast
-   road, define the two accent colors used everywhere below.
+   Professional dark municipal/citizen-service portal design
+   Theme: night sky + teal glow + amber streetlights
    ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Tajawal:wght@400;500;700&display=swap');
 
 :root{
-  /* ---- color: night sky + the two lights inside the photo ---- */
+  /* ---- colors ---- */
   --night-950: #060b16;
   --night-900: #0a1220;
   --night-800: #0f1c33;
@@ -21,14 +19,14 @@
   --text-lo: #93a5c2;
   --text-faint: #5c6d8a;
 
-  --teal: #2fe2c9;      /* mosque facade glow   */
+  --teal: #2fe2c9;
   --teal-dim: rgba(47,226,201,.14);
   --teal-line: rgba(47,226,201,.35);
 
-  --amber: #f5a94e;     /* streetlights / headlight trails */
+  --amber: #f5a94e;
   --amber-dim: rgba(245,169,78,.14);
 
-  --coral: #f2707a;     /* error state only */
+  --coral: #f2707a;
   --coral-dim: rgba(242,112,122,.14);
 
   /* ---- type ---- */
@@ -98,9 +96,7 @@ input, select, textarea{ font-family: inherit; }
 .section-padding{ padding: var(--section-pad) 0; }
 
 /* ---------------------------------------------------------
-   Signature element: the "streetlamp" glow-divider.
-   Echoes the string of amber lights leading to the teal-lit
-   mosque in the banner photo. Used under every section title.
+   Section titles
    --------------------------------------------------------- */
 .section-title{
   max-width: 640px;
@@ -160,7 +156,7 @@ input, select, textarea{ font-family: inherit; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
+  gap: 18px;
   padding: 16px 28px;
 }
 .logo{
@@ -185,7 +181,7 @@ input, select, textarea{ font-family: inherit; }
 .navbar{
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 24px;
 }
 .navbar a{
   font-size: .92rem;
@@ -221,12 +217,60 @@ input, select, textarea{ font-family: inherit; }
   box-shadow: 0 10px 22px -6px rgba(245,169,78,.7);
 }
 
-@media (max-width: 860px){
+/* Header track report search */
+.track-search{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 260px;
+}
+.track-search input{
+  width: 210px;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: rgba(255,255,255,.08);
+  color: var(--text-hi);
+  outline: none;
+  font-size: .86rem;
+}
+.track-search input::placeholder{ color: var(--text-faint); }
+.track-search input:focus{
+  border-color: var(--teal-line);
+  background: rgba(47,226,201,.08);
+}
+.track-search button{
+  height: 40px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--teal), #1fb9a4);
+  color: #06110d;
+  font-weight: 800;
+  box-shadow: 0 8px 20px -10px rgba(47,226,201,.7);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.track-search button:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -10px rgba(47,226,201,.9);
+}
+
+@media (max-width: 1050px){
   .navbar{ display: none; }
+}
+@media (max-width: 760px){
+  .header-content{
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .logo{ width: 100%; justify-content: center; }
+  .track-search{ width: 100%; justify-content: center; }
+  .track-search input{ width: min(100%, 260px); }
 }
 
 /* ---------------------------------------------------------
-   Hero — the banner photo IS the thesis of the page
+   Hero
    --------------------------------------------------------- */
 .hero{
   position: relative;
@@ -448,7 +492,7 @@ input, select, textarea{ font-family: inherit; }
 .report-form select{
   appearance: none;
   background-image: linear-gradient(45deg, transparent 50%, var(--text-lo) 50%),
-                     linear-gradient(135deg, var(--text-lo) 50%, transparent 50%);
+                    linear-gradient(135deg, var(--text-lo) 50%, transparent 50%);
   background-position: left 16px center, left 10px center;
   background-size: 6px 6px, 6px 6px;
   background-repeat: no-repeat;
@@ -618,6 +662,76 @@ input, select, textarea{ font-family: inherit; }
 .cta-box h2{ font-size: clamp(1.4rem, 2.4vw, 1.9rem); margin-bottom: 8px; }
 .cta-box p{ margin: 0; font-size: .95rem; }
 .cta-box .btn{ flex-shrink: 0; }
+
+/* ---------------------------------------------------------
+   Contact Section
+   --------------------------------------------------------- */
+.contact-section{
+  background: linear-gradient(180deg, var(--night-900), var(--night-950));
+  border-top: 1px solid var(--border-soft);
+}
+.contact-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-top: 40px;
+}
+.contact-card{
+  background: var(--night-800);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  padding: 26px;
+  text-align: center;
+  transition: all .3s ease;
+}
+.contact-card:hover{
+  transform: translateY(-6px);
+  border-color: var(--teal-line);
+  box-shadow: 0 20px 40px -20px rgba(47,226,201,.35);
+}
+.contact-icon{
+  width: 65px;
+  height: 65px;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--teal-dim);
+  border: 1px solid var(--teal-line);
+  border-radius: 50%;
+  font-size: 28px;
+  transition: transform .3s ease;
+}
+.contact-card:hover .contact-icon{
+  transform: scale(1.1);
+}
+.contact-card h3{
+  color: var(--text-hi);
+  margin-bottom: 12px;
+}
+.contact-card p,
+.contact-card a{
+  color: var(--text-lo);
+  text-decoration: none;
+  font-size: .95rem;
+}
+.contact-card a:hover{
+  color: var(--teal);
+}
+.whatsapp-btn{
+  display: inline-block;
+  margin-top: 10px;
+  background: #25D366;
+  color: white !important;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 700;
+  transition: .3s ease;
+}
+.whatsapp-btn:hover{
+  transform: translateY(-2px);
+  background: #1eb954;
+}
 
 /* ---------------------------------------------------------
    Footer
