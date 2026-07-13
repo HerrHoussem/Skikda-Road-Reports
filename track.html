@@ -11,7 +11,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-
 *{
     margin:0;
     padding:0;
@@ -21,51 +20,31 @@
 body{
     font-family:'Cairo',sans-serif;
     min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
 
     background:
-    linear-gradient(
-    rgba(0,43,91,0.70),
-    rgba(0,43,91,0.70)
-    ),
+    linear-gradient(rgba(0,43,91,.75),rgba(0,43,91,.75)),
     url('skikda-banner.jpg');
 
     background-size:cover;
     background-position:center;
     background-attachment:fixed;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    padding:25px;
 }
 
 .container{
     width:100%;
-    max-width:1100px;
+    max-width:850px;
 }
 
 .card{
-
-    background:rgba(255,255,255,0.90);
-
+    background:rgba(255,255,255,.92);
     backdrop-filter:blur(12px);
-
     border-radius:25px;
-
     padding:40px;
-
-    box-shadow:0 20px 40px rgba(0,0,0,.25);
-
-}
-
-.logo{
-    text-align:center;
-    margin-bottom:15px;
-}
-
-.logo span{
-    font-size:55px;
+    box-shadow:0 20px 50px rgba(0,0,0,.25);
 }
 
 h1{
@@ -77,8 +56,7 @@ h1{
 .subtitle{
     text-align:center;
     color:#666;
-    margin-bottom:35px;
-    font-size:18px;
+    margin-bottom:30px;
 }
 
 .report-info{
@@ -87,8 +65,8 @@ h1{
 }
 
 .info-row{
-    background:#ffffff;
-    padding:15px 20px;
+    background:#fff;
+    padding:16px;
     border-radius:12px;
     border-right:5px solid #0d6efd;
     font-size:20px;
@@ -98,13 +76,13 @@ h1{
     color:#003366;
 }
 
-/* Status */
+/* STATUS */
 
 .status-new{
     background:#FFF3CD;
     color:#B45309;
     padding:8px 15px;
-    border-radius:30px;
+    border-radius:20px;
     font-weight:bold;
 }
 
@@ -112,7 +90,7 @@ h1{
     background:#DBEAFE;
     color:#1D4ED8;
     padding:8px 15px;
-    border-radius:30px;
+    border-radius:20px;
     font-weight:bold;
 }
 
@@ -120,17 +98,17 @@ h1{
     background:#DCFCE7;
     color:#166534;
     padding:8px 15px;
-    border-radius:30px;
+    border-radius:20px;
     font-weight:bold;
 }
 
-/* Timeline */
+/* TIMELINE */
 
 .timeline{
-    margin-top:40px;
     display:flex;
     justify-content:space-between;
-    align-items:center;
+    margin-top:40px;
+    gap:20px;
 }
 
 .step{
@@ -141,13 +119,12 @@ h1{
 .circle{
     width:55px;
     height:55px;
-    line-height:55px;
     border-radius:50%;
+    line-height:55px;
     margin:auto;
     margin-bottom:10px;
     color:white;
     font-weight:bold;
-    font-size:20px;
 }
 
 .completed .circle{
@@ -156,6 +133,7 @@ h1{
 
 .pending .circle{
     background:#cbd5e1;
+    color:#555;
 }
 
 .completed{
@@ -174,17 +152,14 @@ h1{
 
 @media(max-width:768px){
 
-.timeline{
-    flex-direction:column;
-    gap:25px;
-}
+    .timeline{
+        flex-direction:column;
+    }
 
-.info-row{
-    font-size:17px;
+    .info-row{
+        font-size:17px;
+    }
 }
-
-}
-
 </style>
 </head>
 
@@ -192,156 +167,143 @@ h1{
 
 <div class="container">
 
-<div class="card">
+    <div class="card">
 
-<div class="logo">
-<span>📋</span>
-</div>
+        <h1>نظام متابعة البلاغات</h1>
 
-<h1>منصة متابعة البلاغات</h1>
+        <p class="subtitle">
+            ولاية سكيكدة - منصة متابعة البلاغات الإلكترونية
+        </p>
 
-<p class="subtitle">
-ولاية سكيكدة - نظام متابعة البلاغات الإلكترونية
-</p>
+        <div id="result" class="loading">
+            جاري تحميل بيانات البلاغ...
+        </div>
 
-<div id="result" class="loading">
-جاري تحميل بيانات البلاغ...
-</div>
-
-</div>
+    </div>
 
 </div>
 
 <script>
 
 const SUPABASE_URL =
-'https://xhgjmqyjbtnbdxvronhs.supabase.co';
+"https://xhgjmqyjbtnbdxvronhs.supabase.co";
 
 const SUPABASE_KEY =
-'sb_publishable_QBNv1eSIBsuzfu5j_eaRVA_UC3vF6KH';
+"sb_publishable_QBNv1eSIBsuzfu5j_eaRVA_UC3vF6KH";
 
 const supabaseClient =
 supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
+    SUPABASE_URL,
+    SUPABASE_KEY
 );
 
 const params =
 new URLSearchParams(window.location.search);
 
 const reportId =
-params.get('reportId');
+params.get("reportId");
 
 async function loadReport(){
 
-if(!reportId){
+    if(!reportId){
 
-document.getElementById("result").innerHTML =
-`
-<div class="info-row">
-رقم البلاغ غير موجود.
-</div>
-`;
+        document.getElementById("result").innerHTML =
+        "<div class='info-row'>رقم البلاغ غير موجود.</div>";
 
-return;
-}
+        return;
+    }
 
-const {data,error} =
-await supabaseClient
-.from('reports')
-.select('*')
-.eq('report_id',reportId)
-.single();
+    const {data,error} =
+    await supabaseClient
+    .from("reports")
+    .select("*")
+    .eq("report_id",reportId)
+    .single();
 
-if(error || !data){
+    if(error || !data){
 
-document.getElementById("result").innerHTML =
-`
-<div class="info-row">
-لم يتم العثور على البلاغ.
-</div>
-`;
+        document.getElementById("result").innerHTML =
+        "<div class='info-row'>لم يتم العثور على البلاغ.</div>";
 
-return;
-}
+        return;
+    }
 
-let statusClass="status-new";
-let statusText="جديد";
+    let statusClass = "status-new";
+    let statusText = "جديد";
 
-if(data.status==="inprogress"){
-statusClass="status-progress";
-statusText="قيد المعالجة";
-}
+    if(data.status === "inprogress"){
+        statusClass = "status-progress";
+        statusText = "قيد المعالجة";
+    }
 
-if(data.status==="resolved"){
-statusClass="status-resolved";
-statusText="تم الحل";
-}
+    if(data.status === "resolved"){
+        statusClass = "status-resolved";
+        statusText = "تم الحل";
+    }
 
-const step2 =
-(data.status==="inprogress" || data.status==="resolved")
-? "completed"
-: "pending";
+    const step2 =
+    (data.status==="inprogress" || data.status==="resolved")
+    ? "completed"
+    : "pending";
 
-const step3 =
-(data.status==="resolved")
-? "completed"
-: "pending";
+    const step3 =
+    data.status==="resolved"
+    ? "completed"
+    : "pending";
 
-document.getElementById("result").innerHTML =
+    document.getElementById("result").innerHTML =
 
-`
-<div class="report-info">
+    `
+    <div class="report-info">
 
-<div class="info-row">
-<strong>رقم البلاغ:</strong>
-${data.report_id}
-</div>
+        <div class="info-row">
+            <strong>رقم البلاغ:</strong>
+            ${data.report_id}
+        </div>
 
-<div class="info-row">
-<strong>نوع المشكلة:</strong>
-${data.issue_type}
-</div>
+        <div class="info-row">
+            <strong>نوع المشكلة:</strong>
+            ${data.issue_type}
+        </div>
 
-<div class="info-row">
-<strong>الموقع:</strong>
-${data.location}
-</div>
+        <div class="info-row">
+            <strong>الموقع:</strong>
+            ${data.location}
+        </div>
 
-<div class="info-row">
-<strong>الوصف:</strong>
-${data.description}
-</div>
+        <div class="info-row">
+            <strong>الوصف:</strong>
+            ${data.description}
+        </div>
 
-<div class="info-row">
-<strong>الحالة:</strong>
-<span class="${statusClass}">
-${statusText}
-</span>
-</div>
+        <div class="info-row">
+            <strong>الحالة:</strong>
+            <span class="${statusClass}">
+            ${statusText}
+            </span>
+        </div>
 
-</div>
+    </div>
 
-<div class="timeline">
+    <div class="timeline">
 
-<div class="step completed">
-<div class="circle">1</div>
-استلام البلاغ
-</div>
+        <div class="step completed">
+            <div class="circle">1</div>
+            استلام البلاغ
+        </div>
 
-<div class="step ${step2}">
-<div class="circle">2</div>
-قيد المعالجة
-</div>
+        <div class="step ${step2}">
+            <div class="circle">2</div>
+            قيد المعالجة
+        </div>
 
-<div class="step ${step3}">
-<div class="circle">3</div>
-تم الحل
-</div>
+        <div class="step ${step3}">
+            <div class="circle">3</div>
+            تم الحل
+        </div>
 
-</div>
-`;
-
+    </div>
+    `;
 }
 
 loadReport();
