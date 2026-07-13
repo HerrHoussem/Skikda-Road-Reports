@@ -1,1 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Track My Report</title>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            max-width:800px;
+            margin:40px auto;
+            padding:20px;
+        }
+
+        input{
+            width:100%;
+            padding:12px;
+            margin-bottom:10px;
+        }
+
+        button{
+            padding:12px 20px;
+            background:#007bff;
+            color:white;
+            border:none;
+            cursor:pointer;
+        }
+
+        .card{
+            margin-top:20px;
+            border:1px solid #ddd;
+            padding:20px;
+            border-radius:10px;
+        }
+
+        .new{
+            color:orange;
+            font-weight:bold;
+        }
+
+        .inprogress{
+            color:blue;
+            font-weight:bold;
+        }
+
+        .resolved{
+            color:green;
+            font-weight:bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Track My Report</h1>
+
+<p>Enter your Report ID:</p>
+
+<input type="text" id="reportId" placeholder="Example: SKK-379000">
+
+<button onclick="trackReport()">
+Check Status
+</button>
+
+<div id="result"></div>
+
+<script>
+
+const supabase = window.supabase.createClient(
+'https://xhgjmqyjbtnbdxvronhs.supabase.co',
+'sb_publishable_QBNv1eSIBsuzfu5j_eaRVA_UC3vF6KH'
+);
+
+async function trackReport(){
+
+const reportId =
+document.getElementById("reportId").value;
+
+const { data, error } =
+await supabase
+.from('reports')
+.select('*')
+.eq('report_id', reportId)
+.single();
+
+if(error || !data){
+
+document.getElementById("result").innerHTML=
+"<p>Report not found.</p>";
+
+return;
+}
+
+document.getElementById("result").innerHTML=
+`
+<div class="card">
+
+<h3>Report Information</h3>
+
+<p><b>ID:</b> ${data.report_id}</p>
+
+<p><b>Issue:</b> ${data.issue_type}</p>
+
+<p><b>Location:</b> ${data.location}</p>
+
+<p>
+<b>Status:</b>
+
+<span class="${data.status}">
+${data.status}
+</span>
+
+</p>
+
+<p><b>Description:</b> ${data.description}</p>
+
+</div>
+`;
+}
+
+</script>
+
+</body>
+</html>
