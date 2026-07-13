@@ -271,6 +271,37 @@
   </p>
 </footer>
 
+  <!-- AI Assistant Chat Widget -->
+  <div id="chatWidget" class="chat-widget">
+    <button id="chatToggle" class="chat-toggle" aria-label="فتح المساعد الذكي">
+      <span class="chat-toggle-icon">💬</span>
+    </button>
+
+    <div id="chatPanel" class="chat-panel" hidden>
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <span class="chat-avatar">🤖</span>
+          <div>
+            <strong>المساعد الذكي</strong>
+            <span class="chat-status">متصل الآن</span>
+          </div>
+        </div>
+        <button id="chatClose" class="chat-close" aria-label="إغلاق المحادثة">✕</button>
+      </div>
+
+      <div id="chatMessages" class="chat-messages">
+        <div class="chat-msg chat-msg-bot">
+          مرحبًا 👋 أنا المساعد الذكي لمنصة بلاغات الطريق. يمكنني مساعدتك في تعبئة نموذج البلاغ، اختيار نوع المشكلة، أو معرفة كيفية تتبع بلاغ سابق. كيف يمكنني مساعدتك؟
+        </div>
+      </div>
+
+      <form id="chatForm" class="chat-input-row">
+        <input type="text" id="chatInput" placeholder="اكتب سؤالك هنا..." autocomplete="off" />
+        <button type="submit" id="chatSend" aria-label="إرسال">➤</button>
+      </form>
+    </div>
+  </div>
+
   <!-- Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
@@ -374,6 +405,104 @@
 
     reportForm.addEventListener('submit', handleReportSubmit);
     loadStats();
+
+    /* =====================================================
+       AI Assistant chat widget
+       Talks to the "chat-assistant" Supabase Edge Function,
+       which safely proxies requests to Claude (Anthropic API)
+       without ever exposing an API key in this file.
+       ===================================================== */
+    const chatToggle = document.getElementById('chatToggle');
+    const chatPanel = document.getElementById('chatPanel');
+    const chatClose = document.getElementById('chatClose');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatInput');
+    const chatSend = document.getElementById('chatSend');
+
+    let chatHistory = []; // { role: 'user' | 'assistant', content: string }
+
+    function openChat() {
+      chatPanel.hidden = false;
+      chatToggle.classList.add('is-open');
+      chatInput.focus();
+    }
+    function closeChat() {
+      chatPanel.hidden = true;
+      chatToggle.classList.remove('is-open');
+    }
+
+    chatToggle.addEventListener('click', () => {
+      if (chatPanel.hidden) openChat(); else closeChat();
+    });
+    chatClose.addEventListener('click', closeChat);
+
+    function appendMessage(text, sender) {
+      const el = document.createElement('div');
+      el.className = `chat-msg chat-msg-${sender}`;
+      el.textContent = text;
+      chatMessages.appendChild(el);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return el;
+    }
+
+    function appendTypingIndicator() {
+      const el = document.createElement('div');
+      el.className = 'chat-msg chat-msg-bot chat-msg-typing';
+      el.id = 'chatTyping';
+      el.innerHTML = '<span></span><span></span><span></span>';
+      chatMessages.appendChild(el);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    function removeTypingIndicator() {
+      const el = document.getElementById('chatTyping');
+      if (el) el.remove();
+    }
+
+    async function sendChatMessage(event) {
+      event.preventDefault();
+      const message = chatInput.value.trim();
+      if (!message) return;
+
+      appendMessage(message, 'user');
+      chatInput.value = '';
+      chatInput.disabled = true;
+      chatSend.disabled = true;
+      appendTypingIndicator();
+
+      try {
+        const { data, error } = await supabaseClient.functions.invoke('chat-assistant', {
+          body: { message: message, history: chatHistory }
+        });
+
+        removeTypingIndicator();
+
+        if (error || !data || data.error) {
+          console.error('Chat assistant error:', error || data?.error);
+          appendMessage('عذرًا، حدث خطأ أثناء الاتصال بالمساعد. حاول مرة أخرى لاحقًا.', 'bot');
+          return;
+        }
+
+        appendMessage(data.reply, 'bot');
+        chatHistory.push({ role: 'user', content: message });
+        chatHistory.push({ role: 'assistant', content: data.reply });
+
+        // Keep history from growing unbounded
+        if (chatHistory.length > 20) {
+          chatHistory = chatHistory.slice(-20);
+        }
+      } catch (err) {
+        removeTypingIndicator();
+        console.error('Chat assistant exception:', err);
+        appendMessage('عذرًا، تعذر الاتصال بالمساعد الذكي حاليًا.', 'bot');
+      } finally {
+        chatInput.disabled = false;
+        chatSend.disabled = false;
+        chatInput.focus();
+      }
+    }
+
+    chatForm.addEventListener('submit', sendChatMessage);
   </script>
 </body>
 </html>
