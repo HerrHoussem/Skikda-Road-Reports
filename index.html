@@ -322,9 +322,11 @@
         reportForm.addEventListener('submit', handleReportSubmit);
 loadStats();
 
-/* ===== Track Report Search ===== */
 function trackReport() {
-    const reportId = document.getElementById('reportSearch').value.trim();
+    const reportId = document
+        .getElementById('reportSearch')
+        .value
+        .trim();
 
     if (!reportId) {
         alert('يرجى إدخال رقم البلاغ');
@@ -332,5 +334,7 @@ function trackReport() {
     }
 
     window.location.href =
-        'track.html?reportId=' + encodeURIComponent(reportId);
+        'track.html?reportId=' +
+        encodeURIComponent(reportId);
 }
+</script>
