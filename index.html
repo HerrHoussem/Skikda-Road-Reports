@@ -320,7 +320,17 @@
         }
 
         reportForm.addEventListener('submit', handleReportSubmit);
-        loadStats();
-    </script>
-</body>
-</html>
+loadStats();
+
+/* ===== Track Report Search ===== */
+function trackReport() {
+    const reportId = document.getElementById('reportSearch').value.trim();
+
+    if (!reportId) {
+        alert('يرجى إدخال رقم البلاغ');
+        return;
+    }
+
+    window.location.href =
+        'track.html?reportId=' + encodeURIComponent(reportId);
+}
