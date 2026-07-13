@@ -1,70 +1,105 @@
 // Supabase Edge Function: chat-assistant
-// Purpose: Lets the website's chat widget talk to Claude (Anthropic API)
-// without ever exposing the API key in the browser.
+// Purpose: lets the website chat widget talk to Claude / Anthropic API
+// without exposing the API key in the browser.
 //
-// HOW TO DEPLOY (no CLI needed):
-// 1. Supabase Dashboard -> Edge Functions -> "Deploy a new function" -> "Via Editor"
-// 2. Name it exactly: chat-assistant
-// 3. Paste this entire file as the function code
-// 4. Before deploying, add your secret key:
-//    Edge Functions -> Manage secrets -> add a secret named ANTHROPIC_API_KEY
-//    (get this key from https://console.anthropic.com -> API Keys)
-// 5. Click Deploy
+// Deploy in Supabase Dashboard:
+// Edge Functions -> Deploy new function -> Via Editor
+// Function name: chat-assistant
+// Add secret before deploy: ANTHROPIC_API_KEY
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Content-Type": "application/json",
 };
 
-// This system prompt is what teaches the assistant about YOUR platform.
-// Edit this text any time to change what the assistant knows / how it behaves.
-const SYSTEM_PROMPT = `أنت مساعد رقمي على منصة "بلاغات الطريق - سكيكدة"، وهي منصة إلكترونية يستخدمها مواطنو ولاية سكيكدة (الجزائر) للإبلاغ عن مشاكل الطرقات والخدمات العمومية.
+const SYSTEM_PROMPT = `
+أنت مساعد رقمي رسمي لمنصة "بلاغات الطريق - سكيكدة" / Smart Skikda.
 
-معلومات عن المنصة يجب أن تعرفها لمساعدة الزوار:
+المنصة تساعد مواطني ولاية سكيكدة، الجزائر، على الإبلاغ عن:
+- حفرة في الطريق
+- تسرب مياه
+- إنارة عمومية معطلة
+- انسداد مجرى
+- مشكلة أخرى مرتبطة بالخدمات العمومية
 
-- أنواع البلاغات المتاحة في النموذج: حفرة في الطريق، تسرب مياه، إنارة عمومية معطلة، انسداد مجرى، مشكلة أخرى.
-- حقول نموذج البلاغ: نوع المشكلة (قائمة اختيار)، المنطقة أو البلدية (نص حر، مثال: سكيكدة، عزابة، الحروش)، ووصف المشكلة (نص حر مختصر).
-- عند إرسال البلاغ، يحصل المستخدم فورًا على رقم تتبع بصيغة SKK-XXXXXX (ستة أرقام).
-- يمكن للمستخدم لاحقًا معرفة حالة بلاغه عبر إدخال رقم التتبع في خانة البحث الموجودة أعلى الموقع، أو عبر صفحة "track.html".
+معلومات مهمة عن المنصة:
+- لا يحتاج المواطن إلى إنشاء حساب أو تسجيل دخول لإرسال بلاغ.
+- نموذج البلاغ يحتوي على: نوع المشكلة، المنطقة / البلدية، وصف مختصر وواضح للمشكلة.
+- بعد إرسال البلاغ يحصل المستخدم على رقم تتبع مثل: SKK-123456.
+- يمكن تتبع البلاغ من خلال خانة البحث أعلى الموقع أو صفحة track.html.
 - حالات البلاغ الممكنة: جديد، قيد المعالجة، تم الحل.
-- بيانات البلاغات تُخزَّن مباشرة في قاعدة بيانات، ولا حاجة لإنشاء حساب أو تسجيل دخول لإرسال بلاغ.
-- طرق التواصل الأخرى المتاحة: البريد الإلكتروني، الهاتف، وواتساب (روابطها موجودة في قسم "تواصل" أسفل الصفحة).
+- معلومات التواصل موجودة في قسم "تواصل معنا" أسفل الموقع: البريد الإلكتروني، الهاتف، واتساب.
 
-تعليمات السلوك:
-- أجب دائمًا بنفس لغة رسالة المستخدم (عربي أو فرنسي أو غير ذلك).
-- كن مختصرًا وودودًا ومباشرًا، بدون مقدمات طويلة.
-- ساعد الزائر على فهم كيفية تعبئة النموذج، اختيار نوع المشكلة المناسب، أو معرفة كيفية تتبع بلاغ سابق.
-- لا تخترع معلومات عن حالة بلاغ معين؛ إن سأل عن حالة بلاغ محدد، وجّهه لاستخدام خانة البحث أو صفحة track.html بدلاً من تخمين الجواب.
-- لا تقدم معلومات طبية أو قانونية أو غير متعلقة بالمنصة؛ أعد توجيه أي سؤال خارج هذا النطاق بلطف.`;
+طريقة الرد:
+- أجب بنفس لغة المستخدم: العربية أو الفرنسية أو الإنجليزية.
+- كن مختصرًا، محترمًا، واضحًا ومباشرًا.
+- إذا سأل المستخدم عن حالة بلاغ محدد، لا تخترع الحالة. أخبره أن يستخدم رقم التتبع في خانة البحث أو صفحة track.html.
+- لا تطلب معلومات حساسة.
+- لا تقدم نصائح طبية أو قانونية أو سياسية.
+- إذا كان السؤال خارج نطاق المنصة، وجه المستخدم بلطف إلى أنك مخصص لمساعدة زوار منصة Smart Skikda.
+`;
+
+function jsonResponse(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: corsHeaders,
+  });
+}
+
+function cleanHistory(history: unknown) {
+  if (!Array.isArray(history)) return [];
+
+  return history
+    .filter((item) => {
+      return (
+        item &&
+        typeof item === "object" &&
+        (item.role === "user" || item.role === "assistant") &&
+        typeof item.content === "string"
+      );
+    })
+    .slice(-10)
+    .map((item) => ({
+      role: item.role,
+      content: item.content.slice(0, 1500),
+    }));
+}
 
 Deno.serve(async (req) => {
-  // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
 
-  try {
-    const { message, history } = await req.json();
+  if (req.method !== "POST") {
+    return jsonResponse({ error: "Method not allowed" }, 405);
+  }
 
-    if (!message || typeof message !== "string") {
-      return new Response(
-        JSON.stringify({ error: "Missing 'message' field" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+  try {
+    const body = await req.json();
+    const { message, history } = body;
+
+    if (typeof message !== "string") {
+      return jsonResponse({ error: "Missing message field" }, 400);
+    }
+
+    const userMessage = message.trim();
+    if (!userMessage) {
+      return jsonResponse({ error: "Message is empty" }, 400);
+    }
+
+    if (userMessage.length > 2000) {
+      return jsonResponse({ error: "Message is too long. Please send a shorter message." }, 400);
     }
 
     const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
     if (!apiKey) {
-      return new Response(
-        JSON.stringify({ error: "Server misconfigured: missing ANTHROPIC_API_KEY secret" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return jsonResponse({ error: "Server misconfigured: missing ANTHROPIC_API_KEY secret" }, 500);
     }
 
-    // history: optional array of { role: 'user' | 'assistant', content: string }
-    // sent by the frontend so the assistant remembers the conversation so far.
-    const messages = Array.isArray(history) ? [...history] : [];
-    messages.push({ role: "user", content: message });
+    const messages = cleanHistory(history);
+    messages.push({ role: "user", content: userMessage });
 
     const anthropicRes = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -74,37 +109,32 @@ Deno.serve(async (req) => {
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-6",
+        model: "claude-sonnet-4-5",
         max_tokens: 500,
+        temperature: 0.4,
         system: SYSTEM_PROMPT,
-        messages: messages,
+        messages,
       }),
     });
 
     if (!anthropicRes.ok) {
       const errText = await anthropicRes.text();
       console.error("Anthropic API error:", errText);
-      return new Response(
-        JSON.stringify({ error: "Upstream API error" }),
-        { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return jsonResponse({ error: "Assistant service unavailable. Please try again later." }, 502);
     }
 
     const data = await anthropicRes.json();
-    const replyText = (data.content || [])
-      .filter((block) => block.type === "text")
-      .map((block) => block.text)
-      .join("\n");
+    const replyText = Array.isArray(data.content)
+      ? data.content
+          .filter((block: any) => block.type === "text")
+          .map((block: any) => block.text)
+          .join("\n")
+          .trim()
+      : "";
 
-    return new Response(
-      JSON.stringify({ reply: replyText }),
-      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return jsonResponse({ reply: replyText || "لم أتمكن من إنشاء رد حاليًا." }, 200);
   } catch (err) {
     console.error("Edge function error:", err);
-    return new Response(
-      JSON.stringify({ error: "Unexpected server error" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return jsonResponse({ error: "Unexpected server error. Check Edge Function logs in Supabase." }, 500);
   }
 });

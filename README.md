@@ -1,50 +1,20 @@
-****Skikda Road Reports is a modern web platform designed to help citizens report public infrastructure issues across Skikda Province, Algeria.
-The platform enables residents to quickly submit reports related to:
+# Smart Skikda AI Assistant Update
 
-🕳️ Road damage and potholes
-💧 Water leaks
-💡 Faulty streetlights
-🚧 Public infrastructure issues
+This ZIP contains updated files for the Smart Skikda / بلاغات الطريق - سكيكدة website.
 
-Every report is stored in a cloud database and receives a unique tracking ID, allowing users to monitor the progress of their submission.
-<img width="1618" height="793" alt="image" src="https://github.com/user-attachments/assets/3d51f10b-b94c-4ad9-8c20-44cc09c3da67" />
-<img width="1342" height="815" alt="image" src="https://github.com/user-attachments/assets/c8fbbf4f-14c7-4453-b09a-2da5784ad5da" />
-<img width="1439" height="794" alt="image" src="https://github.com/user-attachments/assets/e1ef15c2-0b43-4646-9bb3-631ca55c389f" />
+## Files included
 
+- `index.html` — cleaned HTML, improved AI assistant UI, quick action buttons, fixed CDN/font URLs.
+- `style.css` — professional dark portal styling + chatbot quick action button styles.
+- `chat-assistant-edge-function.ts` — Supabase Edge Function backend for Claude / Anthropic API.
 
-****Cloud Database ,Powered by:
-**-Supabase PostgreSQL
--GitHub Pages Hosting
+## Important deploy notes
 
-**Technology Stack :
-**HTML5
-CSS3
-JavaScript
+1. Replace your current `index.html` with the included `index.html`.
+2. Replace your current `style.css` with the included `style.css`.
+3. In Supabase Dashboard, open Edge Functions and deploy/update function named `chat-assistant` using `chat-assistant-edge-function.ts`.
+4. Add this Edge Function secret before deploying:
+   - Name: `ANTHROPIC_API_KEY`
+   - Value: your real Anthropic API key from Anthropic Console.
 
-**Project structure :**
-
-Skikda-Road-Reports/
-│
-├── index.html
-├── track.html
-├── style.css
-├── skikda-banner.jpg
-│
-├── fr/
-│   ├── index.html
-│   └── track.html
-│
-└── README.md
-
-****Project Vision
-The goal of this project is to improve communication between citizens and local authorities by providing a transparent, modern, and easy-to-use reporting platform that contributes to safer roads and better public services throughout Skikda Province.
-
-
-**Author
-**Houssem Eddine Bousseliou
-Cloud Support Engineer | Microsoft Azure
-
-🌍 Kraków, Poland
-💼 LTIMindtree
-📧 Houssembousseliou5@gmail.com
-
+Never paste your Anthropic API key into `index.html` or GitHub.
