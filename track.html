@@ -1,196 +1,189 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تتبع حالة البلاغ</title>
 
-<title>تتبع البلاغ</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: "Cairo", sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            background:
+                linear-gradient(rgba(0, 51, 102, 0.65), rgba(0, 51, 102, 0.65)),
+                url("skikda-banner.jpg");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-<style>
-body {
-    font-family: 'Cairo', sans-serif;
-    margin: 0;
-    min-height: 100vh;
-    background:
-        linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.55)),
-        url('skikda-banner.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            padding: 20px;
+        }
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        .card {
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
 
-.container {
-    width: 100%;
-    max-width: 1000px;
-    padding: 20px;
-}
+        h2 {
+            text-align: center;
+            color: #003366;
+            margin-bottom: 30px;
+        }
 
-.card {
-    background: rgba(255,255,255,0.96);
-    border-radius: 20px;
-    padding: 40px;
-    box-shadow: 0 15px 40px rgba(0,0,0,.25);
-    text-align: right;
-}
+        p {
+            font-size: 20px;
+            margin: 15px 0;
+        }
 
-.card h2 {
-    color: #003366;
-    margin-bottom: 30px;
-    text-align: center;
-}
+        .status-new {
+            background: #FFF3CD;
+            color: #B45309;
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-weight: bold;
+        }
 
-.card p {
-    font-size: 20px;
-    margin: 15px 0;
-}
+        .status-progress {
+            background: #DBEAFE;
+            color: #1D4ED8;
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-weight: bold;
+        }
 
-/* Status Colors */
+        .status-resolved {
+            background: #DCFCE7;
+            color: #166534;
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-weight: bold;
+        }
 
-.status-new {
-    background: #FFF3CD;
-    color: #B45309;
-    padding: 8px 15px;
-    border-radius: 30px;
-    font-weight: bold;
-}
+        .timeline {
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+            text-align: center;
+        }
 
-.status-progress {
-    background: #DBEAFE;
-    color: #1D4ED8;
-    padding: 8px 15px;
-    border-radius: 30px;
-    font-weight: bold;
-}
+        .step {
+            flex: 1;
+            padding: 10px;
+        }
 
-.status-resolved {
-    background: #DCFCE7;
-    color: #166534;
-    padding: 8px 15px;
-    border-radius: 30px;
-    font-weight: bold;
-}
+        .completed {
+            color: #22c55e;
+            font-weight: bold;
+        }
 
-/* Timeline */
-
-.timeline {
-    margin-top: 35px;
-    display: flex;
-    justify-content: space-between;
-    text-align: center;
-}
-
-.step {
-    flex: 1;
-    padding: 10px;
-}
-
-.completed {
-    color: #22c55e;
-    font-weight: bold;
-}
-
-.pending {
-    color: #888;
-}
-</style>
-
-.status-new{
-    color:orange;
-    font-weight:bold;
-}
-
-.status-inprogress{
-    color:blue;
-    font-weight:bold;
-}
-
-.status-resolved{
-    color:green;
-    font-weight:bold;
-}
-</style>
-
+        .pending {
+            color: #999;
+        }
+    </style>
 </head>
+
 <body>
 
-<div class="container">
+    <div class="container">
+        <div class="card">
+            <h2>📋 تتبع حالة البلاغ</h2>
 
-<div class="card">
+            <div id="result">
+                جاري البحث...
+            </div>
+        </div>
+    </div>
 
-<h2>تتبع حالة البلاغ</h2>
+    <script>
+        const SUPABASE_URL = 'https://xhgjmqyjbtnbdxvronhs.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_QBNv1eSIBsuzfu5j_eaRVA_UC3vF6KH';
 
-<div id="result">
-جاري البحث...
-</div>
+        const supabaseClient = supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
 
-</div>
+        const params = new URLSearchParams(window.location.search);
+        const reportId = params.get("reportId");
 
-</div>
+        async function loadReport() {
 
-<script>
+            if (!reportId) {
+                document.getElementById("result").innerHTML =
+                    "<p>❌ رقم البلاغ غير موجود.</p>";
+                return;
+            }
 
-const SUPABASE_URL =
-'https://xhgjmqyjbtnbdxvronhs.supabase.co';
+            const { data, error } = await supabaseClient
+                .from("reports")
+                .select("*")
+                .eq("report_id", reportId)
+                .single();
 
-const SUPABASE_KEY =
-'sb_publishable_QBNv1eSIBsuzfu5j_eaRVA_UC3vF6KH';
+            if (error || !data) {
+                document.getElementById("result").innerHTML =
+                    "<p>❌ لم يتم العثور على البلاغ.</p>";
+                return;
+            }
 
-const supabaseClient =
-supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
+            let statusClass = "status-new";
 
-const params =
-new URLSearchParams(window.location.search);
+            if (data.status === "inprogress")
+                statusClass = "status-progress";
 
-const reportId =
-params.get('reportId');
+            if (data.status === "resolved")
+                statusClass = "status-resolved";
 
-async function loadReport() {
+            document.getElementById("result").innerHTML = `
+                <p><strong>رقم البلاغ:</strong> ${data.report_id}</p>
 
-if(!reportId){
+                <p><strong>نوع المشكلة:</strong> ${data.issue_type}</p>
 
-document.getElementById('result').innerHTML =
-'رقم البلاغ غير موجود';
+                <p><strong>الموقع:</strong> ${data.location}</p>
 
-return;
-}
+                <p><strong>الوصف:</strong> ${data.description}</p>
 
-const { data, error } =
-await supabaseClient
-.from('reports')
-.select('*')
-.eq('report_id', reportId)
-.single();
+                <p>
+                    <strong>الحالة:</strong>
+                    <span class="${statusClass}">
+                        ${data.status}
+                    </span>
+                </p>
 
-if(error || !data){
+                <div class="timeline">
 
-document.getElementById('result').innerHTML =
-'لم يتم العثور على البلاغ';
+                    <div class="step ${["new","inprogress","resolved"].includes(data.status) ? "completed" : "pending"}">
+                        📝 استلام البلاغ
+                    </div>
 
-return;
-}
+                    <div class="step ${["inprogress","resolved"].includes(data.status) ? "completed" : "pending"}">
+                        🔧 قيد المعالجة
+                    </div>
 
-document.getElementById('result').innerHTML = `
-<p><strong>رقم البلاغ:</strong> ${data.report_id}</p>
-<p><strong>نوع المشكلة:</strong> ${data.issue_type}</p>
-<p><strong>الموقع:</strong> ${data.location}</p>
-<p><strong>الوصف:</strong> ${data.description}</p>
-<p><strong>الحالة:</strong> ${data.status}</p>
-`;
+                    <div class="step ${data.status === "resolved" ? "completed" : "pending"}">
+                        ✅ تم الحل
+                    </div>
 
-}
+                </div>
+            `;
+        }
 
-loadReport();
-
-</script>
+        loadReport();
+    </script>
 
 </body>
+
 </html>
