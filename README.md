@@ -1,4 +1,4 @@
-Skikda Road Reports is a modern web platform designed to help citizens report public infrastructure issues across Skikda Province, Algeria.
+****Skikda Road Reports is a modern web platform designed to help citizens report public infrastructure issues across Skikda Province, Algeria.
 The platform enables residents to quickly submit reports related to:
 
 🕳️ Road damage and potholes
@@ -36,6 +36,9 @@ Skikda-Road-Reports/
 │
 └── README.md
 
+****Project Vision
+The goal of this project is to improve communication between citizens and local authorities by providing a transparent, modern, and easy-to-use reporting platform that contributes to safer roads and better public services throughout Skikda Province.
+
 
 **Author
 **Houssem Eddine Bousseliou
@@ -44,4 +47,4 @@ Cloud Support Engineer | Microsoft Azure
 🌍 Kraków, Poland
 💼 LTIMindtree
 📧 Houssembousseliou5@gmail.com
-GitHub: https://github.com/HerrHoussem
+
