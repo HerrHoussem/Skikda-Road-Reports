@@ -89,6 +89,18 @@ p{ margin:0 0 1em; color:var(--text-lo); } a{ color:inherit; text-decoration:non
 .submit-btn{ margin-top:22px; width:100%; padding:15px; border:none; border-radius:12px; font-weight:700; font-size:1rem; color:#06110d; background:linear-gradient(135deg,var(--teal),#1fb9a4); box-shadow:0 12px 26px -10px rgba(47,226,201,.55); transition:transform .2s ease, box-shadow .2s ease, opacity .2s ease; }
 .submit-btn:hover:not(:disabled){ transform:translateY(-2px); box-shadow:0 16px 30px -10px rgba(47,226,201,.7); } .submit-btn:disabled{ opacity:.6; cursor:not-allowed; transform:none; }
 .form-message{ min-height:20px; margin:14px 0 0; font-size:.88rem; font-weight:600; } .form-message.success{ color:var(--teal); } .form-message.error{ color:var(--coral); }
+
+/* ---- MapTiler maps ---- */
+.map-picker{ margin-top:4px; }
+.map-box{ width:100%; height:260px; border-radius:var(--radius-sm); overflow:hidden; border:1px solid var(--border-soft); border-bottom:2px solid var(--border-strong); background:var(--night-950); }
+.map-hint{ margin:8px 0 0; font-size:.78rem; color:var(--text-faint); }
+.map-box .maplibregl-ctrl-attrib, .map-box-large .maplibregl-ctrl-attrib{ font-size:.65rem; }
+.reports-map-section{ background:var(--night-900); border-top:1px solid var(--border-soft); border-bottom:1px solid var(--border-soft); }
+.map-box-large{ width:100%; height:460px; border-radius:var(--radius-lg); overflow:hidden; border:1px solid var(--border-soft); box-shadow:0 30px 60px -30px rgba(0,0,0,.6); }
+@media (max-width:600px){ .map-box-large{ height:340px; } }
+.maplibregl-popup-content{ background:var(--night-800)!important; color:var(--text-hi)!important; border:1px solid var(--border-soft)!important; border-radius:var(--radius-sm)!important; box-shadow:0 20px 40px -20px rgba(0,0,0,.7)!important; }
+.maplibregl-popup-tip{ border-top-color:var(--night-800)!important; border-bottom-color:var(--night-800)!important; }
+.maplibregl-popup-close-button{ color:var(--text-lo)!important; font-size:1.1rem!important; }
 .cards-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; } @media (max-width:860px){ .cards-grid{ grid-template-columns:1fr; } }
 .service-card{ background:var(--night-800); border:1px solid var(--border-soft); border-radius:var(--radius-lg); padding:30px; transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease; } .service-card:hover{ transform:translateY(-6px); border-color:var(--teal-line); box-shadow:0 24px 40px -22px rgba(47,226,201,.35); }
 .card-icon{ width:52px; height:52px; display:grid; place-items:center; font-size:1.4rem; border-radius:14px; background:var(--teal-dim); border:1px solid var(--teal-line); margin-bottom:18px; } .service-card h3{ font-size:1.1rem; } .service-card p{ font-size:.9rem; }
