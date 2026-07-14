@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.maptiler.com/maptiler-sdk-js/v2.5.1/maptiler-sdk.css" />
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v2.5.1/maptiler-sdk.umd.min.js"></script>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -79,6 +81,15 @@
             </select>
             <label for="location">المنطقة / البلدية</label>
             <input id="location" name="location" type="text" placeholder="مثال: سكيكدة، عزابة، الحروش..." required />
+
+            <label>تحديد الموقع على الخريطة (اختياري)</label>
+            <div class="map-picker">
+              <div id="reportMap" class="map-box"></div>
+              <p class="map-hint">📍 انقر على الخريطة لتحديد الموقع الدقيق للمشكلة — سيتم ملء الحقل أعلاه تلقائيًا</p>
+            </div>
+            <input type="hidden" id="latitude" name="latitude" />
+            <input type="hidden" id="longitude" name="longitude" />
+
             <label for="description">وصف المشكلة</label>
             <textarea id="description" name="description" rows="4" placeholder="اكتب وصفًا مختصرًا للمشكلة..." required></textarea>
             <button type="submit" class="submit-btn" id="submitBtn">تسجيل البلاغ</button>
@@ -102,6 +113,11 @@
       <div class="stat-box"><strong id="resolvedReports">0</strong><span>بلاغ تمت معالجته</span></div>
       <div class="stat-box"><strong id="pendingReports">0</strong><span>بلاغ قيد المتابعة</span></div>
       <div class="stat-box"><strong>24/7</strong><span>إمكانية الإرسال</span></div>
+    </div></section>
+
+    <section id="reports-map" class="reports-map-section section-padding"><div class="container">
+      <div class="section-title"><span>خريطة تفاعلية</span><h2>البلاغات على الخريطة</h2><p>استعرض مواقع البلاغات المسجلة عبر المنصة في مختلف بلديات ولاية سكيكدة.</p></div>
+      <div id="reportsMapContainer" class="map-box map-box-large"></div>
     </div></section>
 
     <section id="how-it-works" class="how section-padding"><div class="container">
@@ -134,6 +150,85 @@
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_QBNv1eSIBsuzfu5j_eaRVA_UC3vF6KH';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
+    // ---- MapTiler setup ----
+    maptilersdk.config.apiKey = 'dPBZSDYwl0XPGHZAnXlA';
+    const SKIKDA_CENTER = [6.9046, 36.8794]; // [lng, lat]
+    let pickerMap, pickerMarker, reportsMap;
+
+    function initPickerMap() {
+      pickerMap = new maptilersdk.Map({
+        container: 'reportMap',
+        style: maptilersdk.MapStyle.STREETS,
+        center: SKIKDA_CENTER,
+        zoom: 11,
+      });
+      pickerMap.addControl(new maptilersdk.NavigationControl(), 'top-left');
+
+      pickerMap.on('click', async (e) => {
+        const { lng, lat } = e.lngLat;
+        setPickerMarker(lng, lat);
+        document.getElementById('latitude').value = lat.toFixed(6);
+        document.getElementById('longitude').value = lng.toFixed(6);
+        await reverseGeocode(lng, lat);
+      });
+    }
+
+    function setPickerMarker(lng, lat) {
+      if (pickerMarker) pickerMarker.remove();
+      pickerMarker = new maptilersdk.Marker({ color: '#2fe2c9' }).setLngLat([lng, lat]).addTo(pickerMap);
+    }
+
+    async function reverseGeocode(lng, lat) {
+      try {
+        const res = await fetch(`https://api.maptiler.com/geocoding/${lng},${lat}.json?key=dPBZSDYwl0XPGHZAnXlA&language=ar`);
+        const data = await res.json();
+        const place = data && data.features && data.features[0] ? data.features[0].place_name : null;
+        if (place) document.getElementById('location').value = place;
+      } catch (err) {
+        console.error('MapTiler reverse geocoding error:', err);
+      }
+    }
+
+    function initReportsMap() {
+      reportsMap = new maptilersdk.Map({
+        container: 'reportsMapContainer',
+        style: maptilersdk.MapStyle.STREETS,
+        center: SKIKDA_CENTER,
+        zoom: 10,
+      });
+      reportsMap.addControl(new maptilersdk.NavigationControl(), 'top-left');
+    }
+
+    async function loadReportsOnMap() {
+      if (!reportsMap) return;
+      const { data, error } = await supabaseClient
+        .from('reports')
+        .select('report_id, issue_type, location, status, latitude, longitude')
+        .not('latitude', 'is', null)
+        .not('longitude', 'is', null);
+
+      if (error) { console.error('Supabase map load error:', error); return; }
+
+      (data || []).forEach((report) => {
+        const lat = parseFloat(report.latitude);
+        const lng = parseFloat(report.longitude);
+        if (Number.isNaN(lat) || Number.isNaN(lng)) return;
+
+        const color = report.status === 'resolved' ? '#2fe2c9' : '#f5a94e';
+        const popupHtml = `
+          <div style="font-family:Tajawal,Cairo,sans-serif; direction:rtl; text-align:right; min-width:160px;">
+            <strong>${report.issue_type || ''}</strong><br/>
+            <span>${report.location || ''}</span><br/>
+            <span style="opacity:.7;">رقم البلاغ: ${report.report_id || ''}</span>
+          </div>`;
+
+        new maptilersdk.Marker({ color })
+          .setLngLat([lng, lat])
+          .setPopup(new maptilersdk.Popup({ offset: 20 }).setHTML(popupHtml))
+          .addTo(reportsMap);
+      });
+    }
+
     const reportForm = document.getElementById('reportForm');
     const submitBtn = document.getElementById('submitBtn');
     const formMessage = document.getElementById('formMessage');
@@ -146,13 +241,27 @@
       const issueType = document.getElementById('type').value.trim();
       const location = document.getElementById('location').value.trim();
       const description = document.getElementById('description').value.trim();
+      const latitude = document.getElementById('latitude').value;
+      const longitude = document.getElementById('longitude').value;
       const trackingId = generateReportId();
       if (!issueType || !location || !description) { showMessage('يرجى ملء جميع الحقول المطلوبة.', 'error'); return; }
       submitBtn.disabled = true; submitBtn.textContent = 'جاري التسجيل...'; showMessage('', '');
-      const { error } = await supabaseClient.from('reports').insert({ report_id: trackingId, issue_type: issueType, location, description, status: 'new' });
+      const { error } = await supabaseClient.from('reports').insert({
+        report_id: trackingId,
+        issue_type: issueType,
+        location,
+        description,
+        status: 'new',
+        latitude: latitude ? parseFloat(latitude) : null,
+        longitude: longitude ? parseFloat(longitude) : null,
+      });
       submitBtn.disabled = false; submitBtn.textContent = 'تسجيل البلاغ';
       if (error) { console.error('Supabase insert error:', error); showMessage('حدث خطأ أثناء إرسال البلاغ. تأكد من RLS policies واسم الأعمدة في Supabase.', 'error'); return; }
-      showMessage(`تم تسجيل البلاغ بنجاح. رقم التتبع: ${trackingId}`, 'success'); reportForm.reset(); loadStats();
+      showMessage(`تم تسجيل البلاغ بنجاح. رقم التتبع: ${trackingId}`, 'success');
+      reportForm.reset();
+      if (pickerMarker) { pickerMarker.remove(); pickerMarker = null; }
+      loadStats();
+      loadReportsOnMap();
     }
 
     async function loadStats() {
@@ -174,6 +283,9 @@
 
     reportForm.addEventListener('submit', handleReportSubmit);
     loadStats();
+    initPickerMap();
+    initReportsMap();
+    reportsMap.on('load', loadReportsOnMap);
 </script>
 </body>
 </html>
