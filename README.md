@@ -6,6 +6,11 @@ Every report is stored in a cloud database and receives a unique tracking ID, al
 <img width="1618" height="793" alt="image" src="https://github.com/user-attachments/assets/663792da-8e04-4d9f-8313-d038b28696e5" />
 <img width="1342" height="815" alt="image" src="https://github.com/user-attachments/assets/938e354b-e667-4636-a36b-3f558fe848c1" />
 <img width="1439" height="794" alt="image" src="https://github.com/user-attachments/assets/5cd8bb73-736b-4c6e-8bb8-3f5260828eb5" />
+<img width="1323" height="685" alt="image" src="https://github.com/user-attachments/assets/878d33b0-0a85-4840-8e91-cb9c3785a5ab" />
+<img width="726" height="631" alt="image" src="https://github.com/user-attachments/assets/61df0c27-a621-42d8-a83e-0a3a1b5879eb" />
+
+
+
 
 ****Cloud Database ,Powered by: **-Supabase PostgreSQL -GitHub Pages Hosting
 
