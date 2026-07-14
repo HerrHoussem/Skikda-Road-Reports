@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="منصة رقمية للإبلاغ عن الحفر، تسربات المياه، وأعطال الإنارة العمومية في ولاية سكيكدة." />
+  <title>بلاغات الطريق - سكيكدة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.maptiler.com/maptiler-sdk-js/v2.5.1/maptiler-sdk.css" />
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v2.5.1/maptiler-sdk.umd.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-content">
+      <a href="#home" class="logo" aria-label="بلاغات الطريق - سكيكدة">
+        <span class="logo-icon">🚦</span>
+        <span>بلاغات الطريق - سكيكدة</span>
+      </a>
+      <nav class="navbar" aria-label="القائمة الرئيسية">
+        <a href="#home">الرئيسية</a>
+        <a href="#services">أنواع البلاغات</a>
+        <a href="#stats">الإحصائيات</a>
+        <a href="#how-it-works">طريقة العمل</a>
+        <a href="#contact">تواصل</a>
+      </nav>
+      <div class="track-search">
+        <input type="text" id="reportSearch" placeholder="أدخل رقم البلاغ (SKK-123456)" />
+        <button type="button" onclick="trackReport()">بحث</button>
+      </div>
+      <a href="fr/index.html" class="header-btn">🇫🇷 Français</a>
+      <a href="#report" class="header-btn">إرسال بلاغ</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="hero">
+      <div class="hero-overlay"><div class="container hero-content">
+        <span class="badge">منصة مواطنة رقمية</span>
+        <h1>ساهم في تحسين الطرقات والخدمات العمومية في ولاية سكيكدة</h1>
+        <p>منصة سهلة وسريعة للإبلاغ عن الحفر، تسربات المياه، وأعطال الإنارة العمومية مع إمكانية تتبع حالة البلاغ.</p>
+        <div class="hero-actions">
+          <a href="#report" class="btn primary-btn">إرسال بلاغ جديد</a>
+          <a href="#how-it-works" class="btn secondary-btn">كيف تعمل المنصة؟</a>
+        </div>
+        <div class="trust-row" aria-label="مميزات المنصة">
+          <div class="trust-card"><strong>سريع</strong><span>نموذج بسيط</span></div>
+          <div class="trust-card"><strong>منظم</strong><span>تصنيف البلاغات</span></div>
+          <div class="trust-card"><strong>شفاف</strong><span>تتبع الحالة</span></div>
+        </div>
+      </div></div>
+    </section>
+
+    <section id="report" class="report-section section-padding">
+      <div class="container report-grid">
+        <div class="report-info">
+          <span class="section-label">إرسال بلاغ</span>
+          <h2>سجّل المشكلة التي لاحظتها</h2>
+          <p>النموذج متصل مباشرة بقاعدة بيانات Supabase PostgreSQL. عند إرسال البلاغ يتم حفظه فورًا مع رقم تتبع خاص يمكن استخدامه لاحقًا لمعرفة حالة البلاغ.</p>
+          <div class="info-list">
+            <div>✅ تصنيف البلاغ حسب النوع</div>
+            <div>✅ تحديد البلدية أو المنطقة</div>
+            <div>✅ وصف واضح للمشكلة</div>
+            <div>✅ حفظ فوري في قاعدة البيانات</div>
+          </div>
+        </div>
+        <div class="report-card">
+          <h2>نموذج البلاغ</h2>
+          <p>املأ المعلومات الأساسية وسيتم تسجيل البلاغ في قاعدة البيانات مباشرة.</p>
+          <form class="report-form" id="reportForm">
+            <label for="type">نوع المشكلة</label>
+            <select id="type" name="type" required>
+              <option value="">اختر نوع البلاغ</option>
+              <option value="حفرة في الطريق">حفرة في الطريق</option>
+              <option value="تسرب مياه">تسرب مياه</option>
+              <option value="إنارة عمومية معطلة">إنارة عمومية معطلة</option>
+              <option value="انسداد مجرى">انسداد مجرى</option>
+              <option value="مشكلة أخرى">مشكلة أخرى</option>
+            </select>
+            <label for="location">المنطقة / البلدية</label>
+            <input id="location" name="location" type="text" placeholder="مثال: سكيكدة، عزابة، الحروش..." required />
+
+            <label>تحديد الموقع على الخريطة (اختياري)</label>
+            <div class="map-picker">
+              <div id="reportMap" class="map-box"></div>
+              <p class="map-hint">📍 انقر على الخريطة لتحديد الموقع الدقيق للمشكلة — سيتم ملء الحقل أعلاه تلقائيًا</p>
+            </div>
+            <input type="hidden" id="latitude" name="latitude" />
+            <input type="hidden" id="longitude" name="longitude" />
+
+            <label for="description">وصف المشكلة</label>
+            <textarea id="description" name="description" rows="4" placeholder="اكتب وصفًا مختصرًا للمشكلة..." required></textarea>
+            <button type="submit" class="submit-btn" id="submitBtn">تسجيل البلاغ</button>
+            <p id="formMessage" class="form-message"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="services" class="services section-padding"><div class="container">
+      <div class="section-title"><span>الخدمات</span><h2>أنواع البلاغات المدعومة</h2><p>واجهة مصممة لتسهيل جمع البلاغات وتنظيمها حسب نوع المشكلة والأولوية.</p></div>
+      <div class="cards-grid">
+        <article class="service-card"><div class="card-icon">🕳️</div><h3>الحفر والتشققات</h3><p>الإبلاغ عن الحفر أو الطرق المتضررة التي قد تسبب خطرًا على المواطنين والمركبات.</p></article>
+        <article class="service-card"><div class="card-icon">💧</div><h3>تسربات المياه</h3><p>تحديد أماكن التسربات لتقليل الهدر وتحسين سرعة التدخل.</p></article>
+        <article class="service-card"><div class="card-icon">💡</div><h3>الإنارة العمومية</h3><p>التبليغ عن المصابيح أو الأعمدة المعطلة للمساعدة في تحسين السلامة ليلًا.</p></article>
+      </div>
+    </div></section>
+
+    <section id="stats" class="stats-section"><div class="container stats-grid">
+      <div class="stat-box"><strong id="totalReports">0</strong><span>بلاغ مسجل</span></div>
+      <div class="stat-box"><strong id="resolvedReports">0</strong><span>بلاغ تمت معالجته</span></div>
+      <div class="stat-box"><strong id="pendingReports">0</strong><span>بلاغ قيد المتابعة</span></div>
+      <div class="stat-box"><strong>24/7</strong><span>إمكانية الإرسال</span></div>
+    </div></section>
+
+    <section id="reports-map" class="reports-map-section section-padding"><div class="container">
+      <div class="section-title"><span>خريطة تفاعلية</span><h2>البلاغات على الخريطة</h2><p>استعرض مواقع البلاغات المسجلة عبر المنصة في مختلف بلديات ولاية سكيكدة.</p></div>
+      <div id="reportsMapContainer" class="map-box map-box-large"></div>
+    </div></section>
+
+    <section id="how-it-works" class="how section-padding"><div class="container">
+      <div class="section-title"><span>طريقة العمل</span><h2>ثلاث خطوات بسيطة</h2></div>
+      <div class="steps-grid">
+        <div class="step-card"><span class="step-number">01</span><h3>اختيار نوع البلاغ</h3><p>اختر المشكلة: حفرة، تسرب مياه، إنارة معطلة أو مشكلة أخرى.</p></div>
+        <div class="step-card"><span class="step-number">02</span><h3>إضافة التفاصيل</h3><p>أضف البلدية والوصف حتى يكون البلاغ واضحًا وسهل المتابعة.</p></div>
+        <div class="step-card"><span class="step-number">03</span><h3>تتبع الحالة</h3><p>يُحفظ البلاغ في قاعدة البيانات مع رقم تتبع خاص لمتابعته لاحقًا.</p></div>
+      </div>
+    </div></section>
+
+    <section class="cta-section"><div class="container cta-box"><div><h2>هل لاحظت مشكلة في الطريق؟</h2><p>ساهم الآن في جعل ولاية سكيكدة أكثر أمانًا وتنظيمًا.</p></div><a href="#report" class="btn primary-btn">إرسال بلاغ الآن</a></div></section>
+
+    <section id="contact" class="contact-section section-padding"><div class="container">
+      <div class="section-title"><span>تواصل معنا</span><h2>معلومات الاتصال</h2><p>يمكنكم التواصل معنا للإبلاغ عن المشاكل أو الاستفسارات المتعلقة بالمنصة.</p></div>
+      <div class="contact-grid">
+        <div class="contact-card"><div class="contact-icon">📧</div><h3>البريد الإلكتروني</h3><a href="mailto:Houssembousseliou5@gmail.com">Houssembousseliou5@gmail.com</a></div>
+        <div class="contact-card"><div class="contact-icon">📞</div><h3>رقم الهاتف</h3><a href="tel:+48510735202">+48 510 735 202</a></div>
+        <div class="contact-card"><div class="contact-icon">💬</div><h3>واتساب</h3><a class="whatsapp-btn" href="https://wa.me/48510735202" target="_blank" rel="noopener noreferrer">تواصل عبر واتساب</a></div>
+        <div class="contact-card"><div class="contact-icon">📍</div><h3>العنوان</h3><p>ولاية سكيكدة - الجزائر</p></div>
+      </div>
+    </div></section>
+  </main>
+
+  <footer class="footer"><p style="text-align:center; margin:0;">© 2026 منصة بلاغات الطريق - سكيكدة. جميع الحقوق محفوظة.</p></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://xhgjmqyjbtnbdxvronhs.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_QBNv1eSIBsuzfu5j_eaRVA_UC3vF6KH';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    // ---- MapTiler setup ----
+    maptilersdk.config.apiKey = 'dPBZSDYwl0XPGHZAnXlA';
+    const SKIKDA_CENTER = [6.9046, 36.8794]; // [lng, lat]
+    let pickerMap, pickerMarker, reportsMap;
+
+    function initPickerMap() {
+      pickerMap = new maptilersdk.Map({
+        container: 'reportMap',
+        style: maptilersdk.MapStyle.STREETS,
+        center: SKIKDA_CENTER,
+        zoom: 11,
+      });
+      pickerMap.addControl(new maptilersdk.NavigationControl(), 'top-left');
+
+      pickerMap.on('click', async (e) => {
+        const { lng, lat } = e.lngLat;
+        setPickerMarker(lng, lat);
+        document.getElementById('latitude').value = lat.toFixed(6);
+        document.getElementById('longitude').value = lng.toFixed(6);
+        await reverseGeocode(lng, lat);
+      });
+    }
+
+    function setPickerMarker(lng, lat) {
+      if (pickerMarker) pickerMarker.remove();
+      pickerMarker = new maptilersdk.Marker({ color: '#2fe2c9' }).setLngLat([lng, lat]).addTo(pickerMap);
+    }
+
+    async function reverseGeocode(lng, lat) {
+      try {
+        const res = await fetch(`https://api.maptiler.com/geocoding/${lng},${lat}.json?key=dPBZSDYwl0XPGHZAnXlA&language=ar`);
+        const data = await res.json();
+        const place = data && data.features && data.features[0] ? data.features[0].place_name : null;
+        if (place) document.getElementById('location').value = place;
+      } catch (err) {
+        console.error('MapTiler reverse geocoding error:', err);
+      }
+    }
+
+    function initReportsMap() {
+      reportsMap = new maptilersdk.Map({
+        container: 'reportsMapContainer',
+        style: maptilersdk.MapStyle.STREETS,
+        center: SKIKDA_CENTER,
+        zoom: 10,
+      });
+      reportsMap.addControl(new maptilersdk.NavigationControl(), 'top-left');
+    }
+
+    async function loadReportsOnMap() {
+      if (!reportsMap) return;
+      const { data, error } = await supabaseClient
+        .from('reports')
+        .select('report_id, issue_type, location, status, latitude, longitude')
+        .not('latitude', 'is', null)
+        .not('longitude', 'is', null);
+
+      if (error) { console.error('Supabase map load error:', error); return; }
+
+      (data || []).forEach((report) => {
+        const lat = parseFloat(report.latitude);
+        const lng = parseFloat(report.longitude);
+        if (Number.isNaN(lat) || Number.isNaN(lng)) return;
+
+        const color = report.status === 'resolved' ? '#2fe2c9' : '#f5a94e';
+        const popupHtml = `
+          <div style="font-family:Tajawal,Cairo,sans-serif; direction:rtl; text-align:right; min-width:160px;">
+            <strong>${report.issue_type || ''}</strong><br/>
+            <span>${report.location || ''}</span><br/>
+            <span style="opacity:.7;">رقم البلاغ: ${report.report_id || ''}</span>
+          </div>`;
+
+        new maptilersdk.Marker({ color })
+          .setLngLat([lng, lat])
+          .setPopup(new maptilersdk.Popup({ offset: 20 }).setHTML(popupHtml))
+          .addTo(reportsMap);
+      });
+    }
+
+    const reportForm = document.getElementById('reportForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const formMessage = document.getElementById('formMessage');
+
+    function generateReportId() { return `SKK-${Math.floor(100000 + Math.random() * 900000)}`; }
+    function showMessage(message, type) { formMessage.textContent = message; formMessage.className = `form-message ${type}`; }
+
+    async function handleReportSubmit(event) {
+      event.preventDefault();
+      const issueType = document.getElementById('type').value.trim();
+      const location = document.getElementById('location').value.trim();
+      const description = document.getElementById('description').value.trim();
+      const latitude = document.getElementById('latitude').value;
+      const longitude = document.getElementById('longitude').value;
+      const trackingId = generateReportId();
+      if (!issueType || !location || !description) { showMessage('يرجى ملء جميع الحقول المطلوبة.', 'error'); return; }
+      submitBtn.disabled = true; submitBtn.textContent = 'جاري التسجيل...'; showMessage('', '');
+      const { error } = await supabaseClient.from('reports').insert({
+        report_id: trackingId,
+        issue_type: issueType,
+        location,
+        description,
+        status: 'new',
+        latitude: latitude ? parseFloat(latitude) : null,
+        longitude: longitude ? parseFloat(longitude) : null,
+      });
+      submitBtn.disabled = false; submitBtn.textContent = 'تسجيل البلاغ';
+      if (error) { console.error('Supabase insert error:', error); showMessage('حدث خطأ أثناء إرسال البلاغ. تأكد من RLS policies واسم الأعمدة في Supabase.', 'error'); return; }
+      showMessage(`تم تسجيل البلاغ بنجاح. رقم التتبع: ${trackingId}`, 'success');
+      reportForm.reset();
+      if (pickerMarker) { pickerMarker.remove(); pickerMarker = null; }
+      loadStats();
+      loadReportsOnMap();
+    }
+
+    async function loadStats() {
+      const totalEl = document.getElementById('totalReports');
+      const resolvedEl = document.getElementById('resolvedReports');
+      const pendingEl = document.getElementById('pendingReports');
+      const { count: total, error: totalError } = await supabaseClient.from('reports').select('*', { count: 'exact', head: true });
+      const { count: resolved, error: resolvedError } = await supabaseClient.from('reports').select('*', { count: 'exact', head: true }).eq('status', 'resolved');
+      if (totalError || resolvedError) { console.error('Supabase stats error:', totalError || resolvedError); return; }
+      const totalCount = total || 0; const resolvedCount = resolved || 0; const pendingCount = Math.max(totalCount - resolvedCount, 0);
+      totalEl.textContent = totalCount; resolvedEl.textContent = resolvedCount; pendingEl.textContent = pendingCount;
+    }
+
+    function trackReport() {
+      const reportId = document.getElementById('reportSearch').value.trim();
+      if (!reportId) { alert('يرجى إدخال رقم البلاغ'); return; }
+      window.location.href = 'track.html?reportId=' + encodeURIComponent(reportId);
+    }
+
+    reportForm.addEventListener('submit', handleReportSubmit);
+    loadStats();
+    initPickerMap();
+    initReportsMap();
+    reportsMap.on('load', loadReportsOnMap);
+</script>
+</body>
+</html>
